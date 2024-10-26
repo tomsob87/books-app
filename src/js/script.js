@@ -8,6 +8,16 @@
     containerOf: {
       bookList: '.books-list',
     },
+    bookList: {
+      book: '.book',
+      bookImage: '.book__image',
+    },
+  };
+
+  const classNames = {
+    bookList: {
+      favoriteBook: 'favorite',
+    },
   };
 
   const templates = {
@@ -18,20 +28,43 @@
 
   function render(){
     for (let bookParam of dataSource.books) {
-      // console.log(bookParam.name, bookParam);
       const generatedHTML = templates.bookTemplate(bookParam);
-      // console.log(generatedHTML);
-
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
-      // console.log(generatedDOM);
-
       bookList.appendChild(generatedDOM);
     }
   }
 
   render();
 
+  const favoriteBooks = [];
+  const bookImage = bookList.querySelectorAll(select.bookList.bookImage);
+  // console.log(bookImage)
 
-  // Include generated DOM in .books-list using appendChild
+  function initActions (){
+    for (let i=0; i < bookImage.length; i++) {
+      // console.log(bookImage[i]);
 
+      const clickedBook = bookImage[i];
+
+      clickedBook.addEventListener('dblclick', function(event){
+        event.preventDefault();
+        clickedBook.classList.toggle(classNames.bookList.favoriteBook);
+        const bookId = clickedBook.getAttribute('data-id');
+        // console.log(bookId);
+        if(!favoriteBooks.includes(bookId)){
+          favoriteBooks.push(bookId);
+        } else {
+          const indexOfElementToDelete = favoriteBooks.indexOf(bookId);
+          // console.log(indexOfElementToDelete);
+          favoriteBooks.splice(indexOfElementToDelete, 1);
+        }
+        
+        console.log(favoriteBooks);
+      });
+
+    }
+    
+  }
+  
+  initActions();
 }
