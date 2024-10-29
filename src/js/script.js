@@ -27,6 +27,8 @@
 
   const bookList = document.querySelector(select.containerOf.bookList);
   const filterForm = document.querySelector(select.containerOf.filters);
+  
+
 
   function render(){
     for (let bookParam of dataSource.books) {
@@ -40,6 +42,36 @@
 
   const filters = [];
   const favoriteBooks = [];
+
+
+  // Hiding books function start here
+
+  function filterBooks(){
+    for (let bookParam of dataSource.books) {
+      console.log(bookParam.details.adults);
+
+      let shouldBeHidden = false;
+
+      for (const filter of filters) {
+        if(!bookParam.details[filter]) {
+          shouldBeHidden = true;
+          break;
+        }
+      }
+
+      if(shouldBeHidden == true) {
+        const bookImageToHide = document.querySelector(select.bookList.bookImage + '[data-id="' + bookParam.id + '"]');
+        bookImageToHide.classList.add('hidden');
+      } else {
+        const bookImageToShow = document.querySelector(select.bookList.bookImage + '[data-id="' + bookParam.id + '"]');
+        bookImageToShow.classList.remove('hidden');
+      }
+
+    }
+  }
+  
+  
+  // document.querySelector(select.bookList.bookImage + '[data-id="' + bookParam.id + '"]');
 
   function initActions (){
 
@@ -62,7 +94,7 @@
           const indexOfElementToDelete = favoriteBooks.indexOf(bookId);
           favoriteBooks.splice(indexOfElementToDelete, 1);
         }
-        console.log(favoriteBooks);
+        // console.log(favoriteBooks);
       }
     });
 
@@ -79,10 +111,14 @@
           const indexOfElementToDelete = filters.indexOf(clickedFilter.value);
           filters.splice(indexOfElementToDelete, 1);
         }
+        
       }
+      filterBooks();
       console.log(filters);
     });
+    
   } 
+  
   
   initActions();
 
