@@ -18,6 +18,7 @@
   const classNames = {
     bookList: {
       favoriteBook: 'favorite',
+      hidden: 'hidden',
     },
   };
 
@@ -28,17 +29,48 @@
   const bookList = document.querySelector(select.containerOf.bookList);
   const filterForm = document.querySelector(select.containerOf.filters);
   
+  function determineRatingBgc (rating){
+    for (let bookParam of dataSource.books){
 
+      let bgcValue = '';
+
+      if(rating < 6){
+        bgcValue = 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
+      } else if (rating > 6 && rating <= 8){
+        bgcValue = 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)';
+      } else if (rating > 8 && rating <= 9) {
+        bgcValue = 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)';
+      } else {
+        bgcValue = 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
+      }
+
+      return bgcValue;
+    }
+  }
 
   function render(){
     for (let bookParam of dataSource.books) {
+
+      const ratingWidth = bookParam.rating * 10;
+      bookParam['ratingWidth'] = ratingWidth;
+
+      const ratingBgc = determineRatingBgc(bookParam.rating);
+      // console.log(ratingBgc);
+      bookParam['ratingBgc'] = ratingBgc;
+
       const generatedHTML = templates.bookTemplate(bookParam);
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
-      bookList.appendChild(generatedDOM);
+     
+
+
+      bookList.appendChild(generatedDOM);   
+      
     }
   }
 
   render();
+
+
 
   const filters = [];
   const favoriteBooks = [];
@@ -48,8 +80,6 @@
 
   function filterBooks(){
     for (let bookParam of dataSource.books) {
-      console.log(bookParam.details.adults);
-
       let shouldBeHidden = false;
 
       for (const filter of filters) {
@@ -61,10 +91,10 @@
 
       if(shouldBeHidden == true) {
         const bookImageToHide = document.querySelector(select.bookList.bookImage + '[data-id="' + bookParam.id + '"]');
-        bookImageToHide.classList.add('hidden');
+        bookImageToHide.classList.add(classNames.bookList.hidden);
       } else {
         const bookImageToShow = document.querySelector(select.bookList.bookImage + '[data-id="' + bookParam.id + '"]');
-        bookImageToShow.classList.remove('hidden');
+        bookImageToShow.classList.remove(classNames.bookList.hidden);
       }
 
     }
@@ -114,7 +144,7 @@
         
       }
       filterBooks();
-      console.log(filters);
+      // console.log(filters);
     });
     
   } 
